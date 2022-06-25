@@ -7,7 +7,7 @@
     end_date=none)
 %}
   select {{ event_type_col }} as event_type, {{ user_id_col }} as user_id, {{ date_col }} as event_date
-  from {{ ref(from) }}
+  from {{ from }}
   where 1 = 1
   {% if start_date is not none %}
     and {{ date_col }} >= '{{ start_date }}'

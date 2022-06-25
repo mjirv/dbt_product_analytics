@@ -27,7 +27,7 @@ _Transforms any time series model with a user ID and event labels into a standar
 
 ```sql
 {{ dbt_product_analytics.event_stream(
-    from="orders",
+    from=ref('orders'),
     event_type_col="status",
     user_id_col="customer_id",
     date_col="order_date",
@@ -44,7 +44,7 @@ _Runs a funnel analysis, i.e. tells you how many users performed step 1 followed
 ```sql
 {% set events =
   dbt_product_analytics.event_stream(
-    from="orders",
+    from=ref('orders'),
     event_type_col="status",
     user_id_col="customer_id",
     date_col="order_date",

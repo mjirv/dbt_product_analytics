@@ -1,6 +1,6 @@
 {% set events = 
   dbt_product_analytics.event_stream(
-    from="orders", 
+    from=ref('orders'), 
     event_type_col="status",
     user_id_col="customer_id", 
     date_col="order_date",
