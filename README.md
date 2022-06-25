@@ -10,7 +10,7 @@ Add the following to your `packages.yml`:
 
 ```yaml
 - git: "https://github.com/mjirv/dbt_product_analytics.git"
-  revision: 0.0.1
+  revision: 0.0.2
 ```
 
 ## Usage
