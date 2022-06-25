@@ -2,7 +2,7 @@
   with event_stream as ( {{ event_stream }} )
   {% for step in steps %}
     , step_{{ loop.index }} as (
-      select count(distinct event_stream.user_id) as events from event_stream
+      select count(distinct event_stream.user_id) as unique_users from event_stream
       {% if loop.index > 1 %}
         inner join event_stream as previous_events
           on event_stream.user_id = previous_events.user_id
@@ -15,7 +15,7 @@
 
   , event_funnel as (
     {% for step in steps %}
-      select '{{ step.event_type }}' as event_type, events
+      select '{{ step.event_type }}' as event_type, unique_users
       from step_{{ loop.index }}
       {% if not loop.last %}
         union all
@@ -25,8 +25,8 @@
 
   , final as (
     select event_type
-    , events, 1.0 * events / nullif(first_value(events) over(), 0) as pct_conversion
-    , 1.0 * events / nullif(lag(events) over(), 0) as pct_of_previous
+    , unique_users, 1.0 * unique_users / nullif(first_value(unique_users) over(), 0) as pct_conversion
+    , 1.0 * unique_users / nullif(lag(unique_users) over(), 0) as pct_of_previous
     from event_funnel
   )
 
