@@ -2,7 +2,14 @@
   with event_stream as ( {{ event_stream }} )
   {% for step in steps %}
     , step_{{ loop.index }} as (
-      select count(*) as events from event_stream where event_type = '{{ step.event_type }}'
+      select count(distinct event_stream.event_user_id) as events from event_stream
+      {% if loop.index > 1 %}
+        inner join event_stream as previous_events
+          on event_stream.event_user_id = previous_events.event_user_id
+          and previous_events.event_type = '{{ loop.previtem.event_type }}'
+          and previous_events.event_date <= event_stream.event_date
+      {% endif %}
+      where event_stream.event_type = '{{ step.event_type }}'
     )
   {% endfor %}
 

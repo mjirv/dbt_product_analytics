@@ -1,4 +1,4 @@
 event_type,events,pct_conversion,pct_of_previous
 "placed",6,1.0,
-"completed",5,0.83,0.83
-"returned",2,0.33,0.4
+"completed",5,0.83333333333333333,0.83333333333333333
+"returned",2,0.3333333333333333,0.4
