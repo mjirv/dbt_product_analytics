@@ -1,0 +1,4 @@
+event_type,unique_users,pct_conversion,pct_of_previous
+"placed",6,1.0,
+"returned",5,0.83,0.83
+"completed",2,0.33,0.4

@@ -1,6 +1,6 @@
-{% macro funnel(steps, start_time, end_time) %}
-
-
+{% macro funnel(steps=None, event_stream=None, type='count', start_time=None, end_time=None) %}
+  with event_stream as ( {{ event_stream }} )
+  select * from event_stream
 {% endmacro %}
 
 

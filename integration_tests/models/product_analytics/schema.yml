@@ -4,4 +4,6 @@ models:
   - name: funnel
     tests:
       - dbt_datamocktool.unit_test:
-          expected_output: ref('dmt_expected__funnel')
+          input_mapping:
+            ref('orders'): ref('raw_orders_simple')
+          expected_output: ref('dmt_expected__funnel_simple')
