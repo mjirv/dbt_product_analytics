@@ -14,4 +14,4 @@
   { "event_type": "returned" }
 ]%}
 
-{{ dbt_product_analytics.funnel(steps=steps, event_stream=events, type="unique") }}
+{{ dbt_product_analytics.funnel(steps=steps, event_stream=events) }}

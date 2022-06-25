@@ -1,4 +1,4 @@
-{% macro funnel(steps=none, event_stream=none, type='count') %}
+{% macro funnel(steps=none, event_stream=none) %}
   with event_stream as ( {{ event_stream }} )
   {% for step in steps %}
     , step_{{ loop.index }} as (
