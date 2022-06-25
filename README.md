@@ -62,3 +62,14 @@ _Runs a funnel analysis, i.e. tells you how many users performed step 1 followed
 -- or materialize your event stream and use:
 -- {{ dbt_product_analytics.funnel(steps=steps, event_stream=ref('order_events')) }}
 ```
+
+Output:
+
+```sql
+michael=# select * from dbt_product_analytics.funnel_orders ;
+ event_type | unique_users |     pct_conversion     |    pct_of_previous
+------------+--------------+------------------------+------------------------
+ placed     |           15 | 1.00000000000000000000 |
+ completed  |            2 | 0.13333333333333333333 | 0.13333333333333333333
+ returned   |            1 | 0.06666666666666666667 | 0.50000000000000000000
+```
