@@ -1,10 +1,18 @@
 {% macro event_stream(
-    ref=None,
-    event_type_col=None,
-    user_id_col=None, 
-    date_col=None,
-    start_date=None, 
-    end_date=None)
+    from=none,
+    event_type_col=none,
+    user_id_col=none, 
+    date_col=none,
+    start_date=none, 
+    end_date=none)
 %}
-  select 1 as test_col
+  select {{ event_type_col }} as event_type, {{ user_id_col }} as event_user_id, {{ date_col }} as event_date
+  from {{ ref(from) }}
+  where 1 = 1
+  {% if start_date is not none %}
+    and {{ date_col }} >= '{{ start_date }}'
+  {% endif %}
+  {% if end_date is not none %}
+    and {{ date_col }} < '{{ end_date }}'
+  {% endif %}
 {% endmacro %}

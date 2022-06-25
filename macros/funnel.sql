@@ -1,6 +1,29 @@
-{% macro funnel(steps=None, event_stream=None, type='count', start_time=None, end_time=None) %}
+{% macro funnel(steps=none, event_stream=none, type='count') %}
   with event_stream as ( {{ event_stream }} )
-  select * from event_stream
+  {% for step in steps %}
+    , step_{{ loop.index }} as (
+      select count(*) as events from event_stream where event_type = '{{ step.event_type }}'
+    )
+  {% endfor %}
+
+  , event_funnel as (
+    {% for step in steps %}
+      select '{{ step.event_type }}' as event_type, events
+      from step_{{ loop.index }}
+      {% if not loop.last %}
+        union all
+      {% endif %}
+    {% endfor %}
+  )
+
+  , final as (
+    select event_type
+    , events, 1.0 * events / first_value(events) over() as pct_conversion
+    , 1.0 * events / lag(events) over() as pct_of_previous
+    from event_funnel
+  )
+
+  select * from final
 {% endmacro %}
 
 
