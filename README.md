@@ -19,9 +19,7 @@ Add the following to your `packages.yml`:
 
 Use them in models and analyses like any other dbt macro.
 
-### event_stream()
-
-([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/event_stream.sql))
+### event_stream() ([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/event_stream.sql))
 
 _Transforms any time series model with a user ID and event labels into a standardized event stream format._
 
@@ -37,9 +35,7 @@ _Transforms any time series model with a user ID and event labels into a standar
     end_date="2019-01-01") }}
 ```
 
-### funnel()
-
-([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/funnel.sql))
+### funnel() ([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/funnel.sql))
 
 _Runs a funnel analysis, i.e. tells you how many users performed step 1 followed by step 2 followed by step 3 etc._
 
