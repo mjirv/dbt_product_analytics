@@ -1,3 +1,4 @@
 packages:
   - package: mjirv/dbt_datamocktool
     version: [">=0.1.11"]
+  - local: ../

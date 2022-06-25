@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: funnel
+    tests:
+      - dbt_datamocktool.unit_test:
+          expected_output: ref('dmt_expected__funnel')
