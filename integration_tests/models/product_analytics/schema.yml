@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: funnel
+  - name: funnel_orders
     tests:
       - dbt_datamocktool.unit_test:
           input_mapping:

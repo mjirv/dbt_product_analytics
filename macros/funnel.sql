@@ -1,16 +1,23 @@
 {% macro funnel(steps=none, event_stream=none) %}
   with event_stream as ( {{ event_stream }} )
   {% for step in steps %}
-    , step_{{ loop.index }} as (
-      select count(distinct event_stream.user_id) as unique_users from event_stream
+    , event_stream_step_{{ loop.index }} as (
+      select event_stream.* 
+      from event_stream
       {% if loop.index > 1 %}
-        inner join event_stream as previous_events
+        inner join event_stream_step_{{ loop.index - 1 }} as previous_events
           on event_stream.user_id = previous_events.user_id
           and previous_events.event_type = '{{ loop.previtem.event_type }}'
           and previous_events.event_date <= event_stream.event_date
       {% endif %}
       where event_stream.event_type = '{{ step.event_type }}'
     )
+
+    , step_{{ loop.index }} as (
+      select count(distinct user_id) as unique_users 
+      from event_stream_step_{{ loop.index }}
+    )  
+
   {% endfor %}
 
   , event_funnel as (
