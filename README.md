@@ -9,8 +9,8 @@ _Currently supports event streams and funnel analysis. More features will be add
 Add the following to your `packages.yml`:
 
 ```yaml
-- git: "https://github.com/mjirv/dbt_product_analytics.git"
-  revision: 0.0.2
+  - package: mjirv/dbt_product_analytics
+    version: [">=0.0.2"]
 ```
 
 ## Usage
