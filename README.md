@@ -1,6 +1,6 @@
 # dbt Product Analytics
 
-A dbt package for doing product analytics.
+A [dbt](https://docs.getdbt.com/) package for doing product analytics.
 
 _Currently supports event streams and funnel analysis. More features will be added soon!_
 
