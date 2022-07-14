@@ -1,4 +1,8 @@
 {% macro funnel(steps=none, event_stream=none) %}
+  {{ return(adapter.dispatch('funnel','dbt_product_analytics')(steps, event_stream)) }}
+{% endmacro %}
+
+{% macro default__funnel(steps, event_stream) %}
   with event_stream as ( {% if not (event_stream|string|trim).startswith('select ') %} select * from {% endif %} {{ event_stream }} )
   {% for step in steps %}
     , event_stream_step_{{ loop.index }} as (
