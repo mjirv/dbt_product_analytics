@@ -36,8 +36,37 @@
 
   , final as (
     select event_type
-    , unique_users, 1.0 * unique_users / nullif(first_value(unique_users) over(), 0) as pct_conversion
-    , 1.0 * unique_users / nullif(lag(unique_users) over(), 0) as pct_of_previous
+      , unique_users, 1.0 * unique_users / nullif(first_value(unique_users) over(), 0) as pct_conversion
+      , 1.0 * unique_users / nullif(lag(unique_users) over(), 0) as pct_of_previous
+    from event_funnel
+  )
+
+  select * from final
+{% endmacro %}
+
+{% macro snowflake__funnel(steps, event_stream) %}
+  with event_stream as ( {% if not (event_stream|string|trim).startswith('select ') %} select * from {% endif %} {{ event_stream }} )
+
+  , event_funnel as (
+    select event_type, count(*) unique_users
+    from event_stream
+    match_recognize(
+        partition by user_id
+        order by event_date
+        one row per match
+        pattern({% for step in steps %} step_{{ loop.index }} {% endfor %} )
+        define
+          {% for step in steps %}
+            step_{{ loop.index }} as event_type = '{{ step.event_type }}' {% if not loop.last %} , {% endif %}
+          {% endfor %}
+    )
+    group by event_type
+  )
+  
+  , final as (
+    select event_type
+      , unique_users, 1.0 * unique_users / nullif(first_value(unique_users) over(), 0) as pct_conversion
+      , 1.0 * unique_users / nullif(lag(unique_users) over(), 0) as pct_of_previous
     from event_funnel
   )
 
