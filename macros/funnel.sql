@@ -53,6 +53,7 @@
     match_recognize(
         partition by user_id
         order by event_date
+        measures event_type as event_type
         one row per match
         pattern({% for step in steps %} step_{{ loop.index }} {% endfor %} )
         define
@@ -66,11 +67,15 @@
   , final as (
     select event_type
       , unique_users, 1.0 * unique_users / nullif(first_value(unique_users) over(), 0) as pct_conversion
-      , 1.0 * unique_users / nullif(lag(unique_users) over(), 0) as pct_of_previous
+      , 1.0 * unique_users / nullif(lag(unique_users) over(order by unique_users), 0) as pct_of_previous
     from event_funnel
   )
 
   select * from final
+{% endmacro %}
+
+{% macro trino__funnel(steps, event_stream) %}
+  {{ dbt_product_analytics.snowflake__funnel(steps, event_stream) }}
 {% endmacro %}
 
 
