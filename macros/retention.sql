@@ -42,7 +42,7 @@
     from event_stream
     where event_type = '{{ second_action }}'
     and event_date > cast('{{ start_date }}' as date)
-    and event_date < {{ dbt_utils.dateadd(datepart=period_type, interval=period, from_date_or_timestamp="cast('" ~ start_date ~ "' as date)") }}
+    and event_date < {{ dbt_product_analytics._dateadd(datepart=period_type, interval=period, from_date_or_timestamp="cast('" ~ start_date ~ "' as date)") }}
     and user_id in (
       select user_id from first_events
     )
