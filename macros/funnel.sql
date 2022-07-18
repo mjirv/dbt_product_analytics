@@ -1,5 +1,5 @@
 {% macro funnel(steps=none, event_stream=none) %}
-  with event_stream as ( {% if not (event_stream|string|trim).startswith('select ') %} select * from {% endif %} {{ event_stream }} )
+  with event_stream as {{ dbt_product_analytics._select_event_stream(event_stream) }}
   {% for step in steps %}
     , event_stream_step_{{ loop.index }} as (
       select event_stream.* 
