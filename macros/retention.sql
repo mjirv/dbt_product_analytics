@@ -27,7 +27,7 @@
     from event_stream
     where event_stream.event_type = '{{ second_action }}'
     and event_stream.event_date >= '{{ start_date }}'
-    and event_stream.event_date < '{{ start_date }}' + 'interval {{ period }} {{ period type }}'
+    and event_stream.event_date < '{{ start_date }}' + 'interval {{ period }} {{ period_type }}'
     and user_id in (
       select user_id from first_events
     )
@@ -48,6 +48,7 @@
         {% for dimension in dimensions %}
           and first_event_counts.{{ dimension }} = secondary_events_{{ period }}.{{ dimension }}
         {% endfor %}
+    {% endfor %}
   )
 
   select * from final
