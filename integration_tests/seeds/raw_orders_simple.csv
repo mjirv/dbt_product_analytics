@@ -19,3 +19,4 @@ id,customer_id,order_date,status
 18,6,2018-01-20,completed
 19,5,2018-01-22,returned
 20,2,2018-01-23,completed
+21,3,2018-01-24,returned
