@@ -9,8 +9,8 @@ _Currently supports event streams and funnel analysis. More features will be add
 Add the following to your `packages.yml`:
 
 ```yaml
-  - package: mjirv/dbt_product_analytics
-    version: [">=0.0.2"]
+- package: mjirv/dbt_product_analytics
+  version: [">=0.0.2"]
 ```
 
 ## Usage
@@ -73,3 +73,37 @@ michael=# select * from dbt_product_analytics.funnel_orders ;
  completed  |            2 | 0.13333333333333333333 | 0.13333333333333333333
  returned   |            1 | 0.06666666666666666667 | 0.50000000000000000000
 ```
+
+### retention() ([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/retention.sql))
+
+_Runs a retention analysis, i.e. tells you how many people who did `first_action` on `start_date` came back to do `second_action` in the date windows chosen_
+
+#### Usage
+
+Example:
+
+```sql
+{{ dbt_product_analytics.retention(
+  event_stream=ref('order_events'),
+  first_action='completed',
+  second_action='completed',
+  start_date='2018-01-17'
+)}}
+```
+
+Output:
+
+```sql
+michael=# select * from dbt_product_analytics.retention_orders ;
+ unique_users_day_0 | unique_users_day_1 | unique_users_day_7 | unique_users_day_14 | unique_users_day_30 | unique_users_day_60 | unique_users_day_120
+--------------------+--------------------+--------------------+---------------------+---------------------+---------------------+----------------------
+                  2 |                  0 |                  0 |                   0 |                   0 |                   0 |                    1
+```
+
+Advanced:
+
+Three other parameters are available: `periods`, `period_type`, and `dimensions`.
+
+- `period`: The period windows you want look at (defaults to `[1, 7, 14, 30, 60, 120])`
+- `period_type`: The date type you want to use (defaults to `day`)
+- `dimensions`: A list of columns from your event stream that you want to group by (defaults to `[]`)
