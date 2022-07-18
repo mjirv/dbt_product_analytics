@@ -15,7 +15,7 @@ Add the following to your `packages.yml`:
 
 ## Usage
 
-**dbt Product Analytics** provides two macros: `event_stream()` and `funnel()`.
+**dbt Product Analytics** provides three macros: `event_stream()`, `funnel()`, and `retention()`.
 
 Use them in models and analyses like any other dbt macro.
 
