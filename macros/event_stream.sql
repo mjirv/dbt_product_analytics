@@ -14,21 +14,9 @@
   from {{ from }}
   where 1 = 1
   {% if start_date is not none %}
-    and {{ date_col }} >= '{{ start_date }}'
+    and {{ date_col }} >= cast('{{ start_date }}' as date)
   {% endif %}
   {% if end_date is not none %}
-    and {{ date_col }} < '{{ end_date }}'
-  {% endif %}
-{% endmacro %}
-
-{% macro trino__event_stream(from, event_type_col, user_id_col, date_col, start_date, end_date) %}
-  select {{ event_type_col }} as event_type, {{ user_id_col }} as user_id, {{ date_col }} as event_date
-  from {{ from }}
-  where 1 = 1
-  {% if start_date is not none %}
-    and {{ date_col }} >= date '{{ start_date }}'
-  {% endif %}
-  {% if end_date is not none %}
-    and {{ date_col }} < date '{{ end_date }}'
+    and {{ date_col }} < cast('{{ end_date }}' as date)
   {% endif %}
 {% endmacro %}

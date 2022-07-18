@@ -7,3 +7,9 @@ models:
           input_mapping:
             ref('orders'): ref('raw_orders_simple')
           expected_output: ref('dmt_expected__funnel_simple')
+  - name: retention_orders
+    tests:
+      - dbt_datamocktool.unit_test:
+          input_mapping:
+            ref('order_events'): ref('order_events')
+          expected_output: ref('dmt_expected__retention')
