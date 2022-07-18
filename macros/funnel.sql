@@ -1,4 +1,8 @@
 {% macro funnel(steps=none, event_stream=none) %}
+  {{ return(adapter.dispatch('funnel','dbt_product_analytics')(steps, event_stream)) }}
+{% endmacro %}
+
+{% macro default__funnel(steps, event_stream) %}
   with event_stream as {{ dbt_product_analytics._select_event_stream(event_stream) }}
   {% for step in steps %}
     , event_stream_step_{{ loop.index }} as (
@@ -32,12 +36,58 @@
 
   , final as (
     select event_type
-    , unique_users, 1.0 * unique_users / nullif(first_value(unique_users) over(), 0) as pct_conversion
-    , 1.0 * unique_users / nullif(lag(unique_users) over(), 0) as pct_of_previous
+      , unique_users, 1.0 * unique_users / nullif(first_value(unique_users) over(), 0) as pct_conversion
+      , 1.0 * unique_users / nullif(lag(unique_users) over(), 0) as pct_of_previous
     from event_funnel
   )
 
   select * from final
+{% endmacro %}
+
+{% macro snowflake__funnel(steps, event_stream) %}
+  with event_stream as {{ dbt_product_analytics._select_event_stream(event_stream) }}
+
+  , steps as (
+    {% for step in steps %}
+      select
+        '{{ step.event_type }}' as event_type
+        , {{ loop.index }} as index
+      {% if not loop.last %}
+        union all
+      {% endif %}
+    {% endfor %}
+  )
+  , event_funnel as (
+    select event_type, count(distinct user_id) as unique_users
+    from event_stream
+    match_recognize(
+        partition by user_id
+        order by event_date
+        all rows per match
+        pattern({% for step in steps %} ({% for i in range(loop.length - loop.index + 1) %} step_{{ loop.index }}+{% endfor %}) {% if not loop.last %} | {% endif %} {% endfor %} )
+        define
+          {% for step in steps %}
+            step_{{ loop.index }} as event_type = '{{ step.event_type }}' {% if not loop.last %} , {% endif %}
+          {% endfor %}
+    )
+    group by event_type
+  )
+  
+  , final as (
+    select event_funnel.event_type
+      , unique_users, cast(unique_users as double) / nullif(first_value(unique_users) over(order by steps.index), 0) as pct_conversion
+      , 1.0 * cast(unique_users as double) / nullif(lag(unique_users) over(order by steps.index), 0) as pct_of_previous
+    from event_funnel
+    left join steps
+      on event_funnel.event_type = steps.event_type
+    order by steps.index
+  )
+
+  select * from final
+{% endmacro %}
+
+{% macro trino__funnel(steps, event_stream) %}
+  {{ dbt_product_analytics.snowflake__funnel(steps, event_stream) }}
 {% endmacro %}
 
 

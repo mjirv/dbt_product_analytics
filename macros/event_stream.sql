@@ -6,6 +6,10 @@
     start_date=none, 
     end_date=none)
 %}
+  {{ return(adapter.dispatch('event_stream', 'dbt_product_analytics')(from, event_type_col, user_id_col, date_col, start_date, end_date)) }}
+{% endmacro %}
+
+{% macro default__event_stream(from, event_type_col, user_id_col, date_col, start_date, end_date) %}
   select {{ event_type_col }} as event_type, {{ user_id_col }} as user_id, {{ date_col }} as event_date
   from {{ from }}
   where 1 = 1
