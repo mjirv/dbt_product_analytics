@@ -10,9 +10,9 @@
   from {{ from }}
   where 1 = 1
   {% if start_date is not none %}
-    and {{ date_col }} >= '{{ start_date }}'
+    and {{ date_col }} >= cast('{{ start_date }}' as date)
   {% endif %}
   {% if end_date is not none %}
-    and {{ date_col }} < '{{ end_date }}'
+    and {{ date_col }} < cast('{{ end_date }}' as date)
   {% endif %}
 {% endmacro %}
