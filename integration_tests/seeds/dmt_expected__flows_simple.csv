@@ -1,0 +1,5 @@
+event_0,event_1,event_2,event_3,event_4,event_5,n_events
+placed,completed,,,,,3
+placed,completed,returned,returned,,,1
+placed,completed,returned,,,,1
+placed,returned,,,,,1
