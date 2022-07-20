@@ -12,10 +12,12 @@
 
   , flow_events as (
     select
-      event_type as event_0
+      {% if before_or_after == 'after' %} event_type as event_0 {% endif %}
       {% for i in range(n_events_from) %}
-        , lead(event_type, {{ i + 1 }}) over(partition by user_id order by event_date) as event_{{ i + 1 }}
+        {% if before_or_after == 'before' %} {% set index = n_events_from - i %} {% else %} {% set index = i + 1 %} {% endif %}
+        {% if before_or_after == 'before' %}{% if not loop.first %},{% endif %}lag{% else %}, lead{% endif %}(event_type, {{ index }}) over(partition by user_id order by event_date) as event_{{ index }}
       {% endfor %}
+      {% if before_or_after == 'before' %}, event_type as event_0 {% endif %}
     from event_stream
   )
 

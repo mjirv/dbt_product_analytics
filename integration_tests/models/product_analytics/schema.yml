@@ -19,3 +19,9 @@ models:
           input_mapping:
             ref('orders'): ref('raw_orders_simple')
           expected_output: ref('dmt_expected__flows_simple')
+  - name: flows_orders_before
+    tests:
+      - dbt_datamocktool.unit_test:
+          input_mapping:
+            ref('orders'): ref('raw_orders_simple')
+          expected_output: ref('dmt_expected__flows_simple_before')
