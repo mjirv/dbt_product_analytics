@@ -15,7 +15,7 @@ Add the following to your `packages.yml`:
 
 ## Usage
 
-**dbt Product Analytics** provides three macros: `event_stream()`, `funnel()`, and `retention()`.
+**dbt Product Analytics** provides four macros: `event_stream()`, `funnel()`, `retention()`, and `flows()`.
 
 Use them in models and analyses like any other dbt macro.
 
@@ -104,6 +104,42 @@ Advanced:
 
 Three other parameters are available: `periods`, `period_type`, and `dimensions`.
 
-- `period`: The period windows you want look at (defaults to `[1, 7, 14, 30, 60, 120])`
-- `period_type`: The date type you want to use (defaults to `day`)
-- `dimensions`: A list of columns from your event stream that you want to group by (defaults to `[]`)
+- **`period`**: The period windows you want look at (defaults to `[1, 7, 14, 30, 60, 120])`
+- **`period_type`**: The date type you want to use (defaults to `day`)
+- **`dimensions`**: A list of columns from your event stream that you want to group by (defaults to `[]`)
+
+### flows() ([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/flows.sql))
+
+_Runs a flow analysis, i.e. shows you common paths users take before or after a given event_
+
+#### Usage
+
+Example:
+
+```sql
+{{
+  dbt_product_analytics.flows(
+    event_stream=events,
+    primary_event='placed'
+  )
+}}
+```
+
+Output:
+
+```sql
+michael=# select * from dbt_product_analytics.flows_orders ;
+ event_0 |  event_1  | event_2  | event_3 | event_4 | event_5 | n_events
+---------+-----------+----------+---------+---------+---------+----------
+ placed  |           |          |         |         |         |       13
+ placed  | completed | returned |         |         |         |        1
+ placed  | completed |          |         |         |         |        1
+```
+
+Advanced:
+
+Three other parameters are available: `n_events_from`, `before_or_after`, and `top_n`.
+
+- **`n_events_from`**: The number of events to include in the flows (defaults to `5`)
+- **`before_or_after`**: Whether to look at the events following your `primary_action` or the ones leading up to it (defaults to `'after'`)
+- **`top_n`**: How many flows to include (defaults to displaying the top `20`)
