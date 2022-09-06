@@ -14,9 +14,9 @@
   from {{ from }}
   where 1 = 1
   {% if start_date is not none %}
-    and {{ date_col }} >= cast('{{ start_date }}' as date)
+    and {{ date_col }} >= {{ dbt_product_analytics._cast_to_date(start_date) }}
   {% endif %}
   {% if end_date is not none %}
-    and {{ date_col }} < cast('{{ end_date }}' as date)
+    and {{ date_col }} < {{ dbt_product_analytics._cast_to_date(end_date) }}
   {% endif %}
 {% endmacro %}
