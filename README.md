@@ -10,7 +10,7 @@ Add the following to your `packages.yml`:
 
 ```yaml
 - package: mjirv/dbt_product_analytics
-  version: [">=0.0.2"]
+  version: [">=0.1.0"]
 ```
 
 ## Usage
