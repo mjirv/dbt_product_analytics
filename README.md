@@ -71,7 +71,8 @@ event_type  unique_users  pct_conversion      pct_of_previous
 ----------  ------------  ------------------  -----------------
 placed      15            1.0                                  
 completed   2             0.133333333333333   0.133333333333333
-returned    1             0.0666666666666667  0.5              ```
+returned    1             0.0666666666666667  0.5              
+```
 
 ### retention() ([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/retention.sql))
 
