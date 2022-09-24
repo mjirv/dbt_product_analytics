@@ -67,12 +67,11 @@ Output:
 
 ```sql
 michael=# select * from dbt_product_analytics.funnel_orders ;
- event_type | unique_users |     pct_conversion     |    pct_of_previous
-------------+--------------+------------------------+------------------------
- placed     |           15 | 1.00000000000000000000 |
- completed  |            2 | 0.13333333333333333333 | 0.13333333333333333333
- returned   |            1 | 0.06666666666666666667 | 0.50000000000000000000
-```
+event_type  unique_users  pct_conversion      pct_of_previous  
+----------  ------------  ------------------  -----------------
+placed      15            1.0                                  
+completed   2             0.133333333333333   0.133333333333333
+returned    1             0.0666666666666667  0.5              ```
 
 ### retention() ([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/retention.sql))
 
@@ -95,9 +94,13 @@ Output:
 
 ```sql
 michael=# select * from dbt_product_analytics.retention_orders ;
- unique_users_day_0 | unique_users_day_1 | unique_users_day_7 | unique_users_day_14 | unique_users_day_30 | unique_users_day_60 | unique_users_day_120
---------------------+--------------------+--------------------+---------------------+---------------------+---------------------+----------------------
-                  2 |                  0 |                  0 |                   0 |                   0 |                   0 |                    1
+period  unique_users  pct_users        
+------  ------------  -----------------
+1       43            0.693548387096774
+7       41            0.661290322580645
+14      37            0.596774193548387
+30      28            0.451612903225806
+60      2             0.032258064516129
 ```
 
 Advanced:
@@ -129,11 +132,11 @@ Output:
 
 ```sql
 michael=# select * from dbt_product_analytics.flows_orders ;
- event_0 |  event_1  | event_2  | event_3 | event_4 | event_5 | n_events
----------+-----------+----------+---------+---------+---------+----------
- placed  |           |          |         |         |         |       13
- placed  | completed | returned |         |         |         |        1
- placed  | completed |          |         |         |         |        1
+event_0  event_1    event_2   event_3  event_4  event_5  n_events
+-------  ---------  --------  -------  -------  -------  --------
+placed                                                   13      
+placed   completed                                       1       
+placed   completed  returned                             1       
 ```
 
 Advanced:
