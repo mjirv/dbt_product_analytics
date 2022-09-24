@@ -41,6 +41,8 @@ _Runs a funnel analysis, i.e. tells you how many users performed step 1 followed
 
 #### Usage
 
+##### Example:
+
 ```sql
 {% set events =
   dbt_product_analytics.event_stream(
@@ -63,7 +65,7 @@ _Runs a funnel analysis, i.e. tells you how many users performed step 1 followed
 -- {{ dbt_product_analytics.funnel(steps=steps, event_stream=ref('order_events')) }}
 ```
 
-Output:
+##### Output:
 
 ```sql
 michael=# select * from dbt_product_analytics.funnel_orders ;
@@ -121,7 +123,7 @@ _Runs a flow analysis, i.e. shows you common paths users take before or after a 
 
 #### Usage
 
-Example:
+##### Example:
 
 ```sql
 {{
@@ -132,7 +134,7 @@ Example:
 }}
 ```
 
-Output:
+##### Output:
 
 ```sql
 michael=# select * from dbt_product_analytics.flows_orders ;
@@ -143,7 +145,7 @@ placed   completed                                       1
 placed   completed  returned                             1       
 ```
 
-Advanced:
+##### Advanced:
 
 Three other parameters are available: `n_events_from`, `before_or_after`, and `top_n`.
 
