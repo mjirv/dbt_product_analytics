@@ -80,18 +80,19 @@ _Runs a retention analysis, i.e. tells you how many people who did `first_action
 
 #### Usage
 
-Example:
+##### Example:
 
 ```sql
 {{ dbt_product_analytics.retention(
   event_stream=ref('order_events'),
   first_action='completed',
   second_action='completed',
-  start_date='2018-01-17'
+  start_date='2018-01-17',
+  end_date='2020-01-01'
 )}}
 ```
 
-Output:
+##### Output:
 
 ```sql
 michael=# select * from dbt_product_analytics.retention_orders ;
@@ -103,8 +104,10 @@ period  unique_users  pct_users
 30      28            0.451612903225806
 60      2             0.032258064516129
 ```
+_Note: `start_date` and `end_date` are not required._
 
-Advanced:
+
+##### Advanced:
 
 Three other parameters are available: `periods`, `period_type`, and `dimensions`.
 
