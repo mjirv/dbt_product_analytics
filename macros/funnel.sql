@@ -11,10 +11,10 @@
       {% if loop.index > 1 %}
         inner join event_stream_step_{{ loop.index - 1 }} as previous_events
           on event_stream.user_id = previous_events.user_id
-          and previous_events.event_type = '{{ loop.previtem.event_type }}'
+          and previous_events.event_type = '{{ loop.previtem }}'
           and previous_events.event_date <= event_stream.event_date
       {% endif %}
-      where event_stream.event_type = '{{ step.event_type }}'
+      where event_stream.event_type = '{{ step }}'
     )
 
     , step_{{ loop.index }} as (
@@ -26,7 +26,7 @@
 
   , event_funnel as (
     {% for step in steps %}
-      select '{{ step.event_type }}' as event_type, unique_users
+      select '{{ step }}' as event_type, unique_users
       from step_{{ loop.index }}
       {% if not loop.last %}
         union all
@@ -50,7 +50,7 @@
   , steps as (
     {% for step in steps %}
       select
-        '{{ step.event_type }}' as event_type
+        '{{ step }}' as event_type
         , {{ loop.index }} as index
       {% if not loop.last %}
         union all
@@ -67,7 +67,7 @@
         pattern({% for step in steps %} ({% for i in range(loop.length - loop.index + 1) %} step_{{ loop.index }}+{% endfor %}) {% if not loop.last %} | {% endif %} {% endfor %} )
         define
           {% for step in steps %}
-            step_{{ loop.index }} as event_type = '{{ step.event_type }}' {% if not loop.last %} , {% endif %}
+            step_{{ loop.index }} as event_type = '{{ step }}' {% if not loop.last %} , {% endif %}
           {% endfor %}
     )
     group by event_type
