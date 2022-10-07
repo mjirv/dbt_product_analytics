@@ -54,11 +54,7 @@ _Runs a funnel analysis, i.e. tells you how many users performed step 1 followed
     end_date="2019-01-01")
 %}
 
-{% set steps = [
-  { "event_type": "placed" },
-  { "event_type": "completed" },
-  { "event_type": "returned" }
-]%}
+{% set steps = ["placed", "completed", "returned" ] %}
 
 {{ dbt_product_analytics.funnel(steps=steps, event_stream=events) }}
 -- or materialize your event stream and use:
@@ -106,16 +102,16 @@ period  unique_users  pct_users
 30      28            0.451612903225806
 60      2             0.032258064516129
 ```
-_Note: `start_date` and `end_date` are not required._
+_Note: `end_date` is not required._
 
 
 ##### Advanced:
 
-Three other parameters are available: `periods`, `period_type`, and `dimensions`.
+Three other parameters are available: `periods`, `period_type`, and `group_by`.
 
 - **`period`**: The period windows you want look at (defaults to `[1, 7, 14, 30, 60, 120])`
 - **`period_type`**: The date type you want to use (defaults to `day`)
-- **`dimensions`**: A list of columns from your event stream that you want to group by (defaults to `[]`)
+- **`group_by`**: A column from your event stream that you want to group by (defaults to `null`)
 
 ### flows() ([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/flows.sql))
 
