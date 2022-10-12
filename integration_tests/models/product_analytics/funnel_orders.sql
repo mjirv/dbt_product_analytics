@@ -8,10 +8,5 @@
     end_date="2019-01-01") 
 %} 
 
-{% set steps = [
-  { "event_type": "placed" },
-  { "event_type": "completed" },
-  { "event_type": "returned" }
-]%}
-
+{% set steps = ["placed", "completed", "returned"] %}
 {{ dbt_product_analytics.funnel(steps=steps, event_stream=events) }}

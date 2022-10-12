@@ -2,5 +2,6 @@
   event_stream=ref('order_events'),
   first_action='completed',
   second_action='completed',
-  start_date='2018-01-17'
+  start_date='2018-01-01',
+  end_date='2018-02-01'
 )}}
