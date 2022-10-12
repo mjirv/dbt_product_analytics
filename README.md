@@ -74,7 +74,7 @@ returned    1             0.0666666666666667  0.5
 
 ### retention() ([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/retention.sql))
 
-_Runs a retention analysis, i.e. tells you how many people who did `first_action` on `start_date` came back to do `second_action` in the date windows chosen_
+_Runs a retention analysis, i.e. tells you how many people who did `first_action` between `start_date` and `end_date` came back to do `second_action` in the date windows chosen_
 
 #### Usage
 
@@ -85,8 +85,8 @@ _Runs a retention analysis, i.e. tells you how many people who did `first_action
   event_stream=ref('order_events'),
   first_action='completed',
   second_action='completed',
-  start_date='2018-01-17',
-  end_date='2020-01-01'
+  start_date='2018-01-01',
+  end_date='2018-02-01'
 )}}
 ```
 
@@ -102,8 +102,6 @@ period  unique_users  pct_users
 30      28            0.451612903225806
 60      2             0.032258064516129
 ```
-_Note: `end_date` is not required._
-
 
 ##### Advanced:
 
