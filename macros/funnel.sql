@@ -1,9 +1,9 @@
-{% macro funnel(steps=none, event_stream=none) %}
-  {{ return(adapter.dispatch('funnel','dbt_product_analytics')(steps, event_stream)) }}
+{% macro funnel(steps=none, event_stream=none, start_date=none, end_date=none) %}
+  {{ return(adapter.dispatch('funnel','dbt_product_analytics')(steps, event_stream, start_date, end_date)) }}
 {% endmacro %}
 
-{% macro default__funnel(steps, event_stream) %}
-  with event_stream as {{ dbt_product_analytics._select_event_stream(event_stream) }}
+{% macro default__funnel(steps, event_stream, start_date, end_date) %}
+  with event_stream as {{ dbt_product_analytics._select_event_stream(event_stream, start_date, end_date) }}
   {% for step in steps %}
     , event_stream_step_{{ loop.index }} as (
       select event_stream.* 
@@ -44,8 +44,8 @@
   select * from final
 {% endmacro %}
 
-{% macro snowflake__funnel(steps, event_stream) %}
-  with event_stream as {{ dbt_product_analytics._select_event_stream(event_stream) }}
+{% macro snowflake__funnel(steps, event_stream, start_date, end_date) %}
+  with event_stream as {{ dbt_product_analytics._select_event_stream(event_stream, start_date, end_date) }}
 
   , steps as (
     {% for step in steps %}
