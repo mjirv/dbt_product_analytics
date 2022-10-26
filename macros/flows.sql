@@ -1,4 +1,12 @@
-{% macro flows(event_stream=None, primary_event=None, n_events_from=5, before_or_after='after', top_n=20) %}
+{% macro flows(
+  event_stream=None,
+  primary_event=None, 
+  n_events_from=5, 
+  before_or_after='after', 
+  top_n=20, 
+  start_date=none, 
+  end_date=none) 
+%}
 
   {% if event_stream is none %}
     {{ exceptions.raise_compiler_error('parameter \'event_stream\' must be provided')}}
@@ -8,7 +16,7 @@
     {{ exceptions.raise_compiler_error('parameter \'primary_event\' must be provided')}}
   {% endif %}  
 
-  with event_stream as {{ dbt_product_analytics._select_event_stream(event_stream) }}
+  with event_stream as {{ dbt_product_analytics._select_event_stream(event_stream, start_date, end_date) }}
 
   , flow_events as (
     select

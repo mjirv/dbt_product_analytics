@@ -10,24 +10,16 @@
   {% if second_action is none %}
     {{ exceptions.raise_compiler_error('parameter \'second_action\' must be provided')}}
   {% endif %}
-
-  {% if start_date is none %}
-    {{ exceptions.raise_compiler_error('parameter \'start_date\' must be provided')}}
-  {% endif %}
-
-  {% if end_date is none %}
-    {{ exceptions.raise_compiler_error('parameter \'end_date\' must be provided')}}
-  {% endif %}
   
-  with event_stream as {{ dbt_product_analytics._select_event_stream(event_stream) }}
+  with event_stream as {{ dbt_product_analytics._select_event_stream(event_stream, start_date, end_date) }}
 
   , first_event_users as (
-    select distinct
+    select
       user_id
       {% if group_by %}, {{ group_by }} as dimension {% endif %}
+      , min(event_date) as first_event_date
     from event_stream
-    where event_date >= {{ dbt_product_analytics._cast_to_date(start_date) }}
-    and event_date < {{ dbt_product_analytics._cast_to_date(end_date) }}
+    group by 1 {% if group_by %}, {{ group_by }} {% endif %}
   )
 
   , first_events as (
@@ -40,16 +32,16 @@
   {% for period in periods %}
   , secondary_events_{{ period }} as (
     select {{ period }} as period,
-    {% if group_by %} {{ group_by }} as dimension, {% endif %}
-    count(distinct user_id) as unique_users
+    {% if group_by %} dimension, {% endif %}
+    count(distinct event_stream.user_id) as unique_users
     from event_stream
+    inner join first_event_users
+      on event_stream.user_id = first_event_users.user_id
+      {% if group_by %} and event_stream.{{ group_by }} = first_event_users.dimension {% endif %}
     where event_type = '{{ second_action }}'
-    and event_date >= {{ dbt_product_analytics._dateadd(datepart=period_type, interval=period, from_date_or_timestamp=dbt_product_analytics._cast_to_date(end_date)) }}
-    and user_id in (
-      select user_id from first_event_users
-    )
+    and event_date >= {{ dbt_product_analytics._dateadd(datepart=period_type, interval=period, from_date_or_timestamp='first_event_date') }}
 
-    group by period {% if group_by %}, dimension {% endif %}
+    group by period {% if group_by %}, {{ group_by }} {% endif %}
   )
   {% endfor %}
 
