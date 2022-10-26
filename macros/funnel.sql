@@ -26,7 +26,7 @@
 
   , event_funnel as (
     {% for step in steps %}
-      select '{{ step }}' as event_type, unique_users
+      select '{{ step }}' as event_type, unique_users, {{ loop.index }} as step_index
       from step_{{ loop.index }}
       {% if not loop.last %}
         union all
@@ -36,8 +36,8 @@
 
   , final as (
     select event_type
-      , unique_users, 1.0 * unique_users / nullif(first_value(unique_users) over(), 0) as pct_conversion
-      , 1.0 * unique_users / nullif(lag(unique_users) over(), 0) as pct_of_previous
+      , unique_users, 1.0 * unique_users / nullif(first_value(unique_users) over(order by step_index), 0) as pct_conversion
+      , 1.0 * unique_users / nullif(lag(unique_users) over(order by step_index), 0) as pct_of_previous
     from event_funnel
   )
 
