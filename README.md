@@ -72,9 +72,16 @@ completed   2             0.133333333333333   0.133333333333333
 returned    1             0.0666666666666667  0.5              
 ```
 
+##### Advanced:
+
+Two optional parameters are available: `start_date`, and `end_date`.
+
+- **`start_date`**: Filters your event stream for only events on or after this date
+- **`end_date`**: Filters your event stream for only events before this date
+
 ### retention() ([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/retention.sql))
 
-_Runs a retention analysis, i.e. tells you how many people who did `first_action` between `start_date` and `end_date` came back to do `second_action` in the date windows chosen_
+_Runs a retention analysis, i.e. tells you how many people who did `first_action` came back to do `second_action` on or after 1, 7, 14 days (or weeks, months, years), etc._
 
 #### Usage
 
@@ -85,8 +92,6 @@ _Runs a retention analysis, i.e. tells you how many people who did `first_action
   event_stream=ref('order_events'),
   first_action='completed',
   second_action='completed',
-  start_date='2018-01-01',
-  end_date='2018-02-01'
 )}}
 ```
 
@@ -105,11 +110,13 @@ period  unique_users  pct_users
 
 ##### Advanced:
 
-Three other parameters are available: `periods`, `period_type`, and `group_by`.
+Five optional parameters are available: `periods`, `period_type`, `group_by`, `start_date`, and `end_date`.
 
 - **`period`**: The period windows you want look at (defaults to `[1, 7, 14, 30, 60, 120])`
 - **`period_type`**: The date type you want to use (defaults to `day`)
 - **`group_by`**: A column from your event stream that you want to group by (defaults to `null`)
+- **`start_date`**: Filters your event stream for only events on or after this date
+- **`end_date`**: Filters your event stream for only events before this date
 
 ### flows() ([source](https://github.com/mjirv/dbt_product_analytics/blob/main/macros/flows.sql))
 
@@ -141,8 +148,10 @@ placed   completed  returned                             1
 
 ##### Advanced:
 
-Three other parameters are available: `n_events_from`, `before_or_after`, and `top_n`.
+Five optional parameters are available: `n_events_from`, `before_or_after`, `top_n`, `start_date`, and `end_date`.
 
 - **`n_events_from`**: The number of events to include in the flows (defaults to `5`)
 - **`before_or_after`**: Whether to look at the events following your `primary_action` or the ones leading up to it (defaults to `'after'`)
 - **`top_n`**: How many flows to include (defaults to displaying the top `20`)
+- **`start_date`**: Filters your event stream for only events on or after this date
+- **`end_date`**: Filters your event stream for only events before this date
